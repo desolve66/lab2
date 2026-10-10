@@ -1,0 +1,57 @@
+### 1. Пользователь
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "Иван Иванов",
+  "email": "ivanov@mail.ru",
+  "role": "EDITOR"
+}
+
+### 2. Рубрика
+POST http://localhost:8080/api/editorial-sections
+Content-Type: application/json
+
+{
+  "name": "Политика",
+  "isAvailableForPublication": true
+}
+
+### 3. Статья (отправлена на проверку)
+POST http://localhost:8080/api/articles
+Content-Type: application/json
+
+{
+  "sectionId": 1,
+  "authorId": 1,
+  "title": "Заголовок",
+  "text": "Текст статьи",
+  "status": "DRAFT"
+}
+
+### 4. Редакторская проверка (время проставит сервер, статья станет APPROVED)
+POST http://localhost:8080/api/editorial-reviews
+Content-Type: application/json
+
+{"articleId": 1, "decision": "APPROVED", "comments": "Всё хорошо"}
+
+### 5. Выпуск
+POST http://localhost:8080/api/edition-issues
+Content-Type: application/json
+
+{"issueDate": "2026-10-15", "articleIds": [1], "status": "PLANNED"}
+
+### 6. Публикация выпуска (статья станет PUBLISHED)
+PATCH http://localhost:8080/api/edition-issues/1
+Content-Type: application/json
+
+{"status": "PUBLISHED"}
+
+### 7. Чтение
+GET http://localhost:8080/api/articles
+
+### 8. Каскадное удаление: удалятся статьи пользователя, их проверки и ссылки из выпусков
+DELETE http://localhost:8080/api/users/1
+
+### 9. Проверяем, что в выпуске не осталось ссылки на удалённую статью
+GET http://localhost:8080/api/edition-issues/1
